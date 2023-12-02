@@ -11,6 +11,7 @@ mpiexec -n 4 ./z3_3
 #include <mpi.h>
 #include <cmath>
 #include <time.h>
+#include <vector>
 
 int getInput(){
     int res;
@@ -22,12 +23,11 @@ int getInput(){
 
 int main(int argc, char *argv[])
 {
-    int n;
-    int sum = 0;
-    int tsum;
-
+    int n,sum,tsum;
     int csize, prank;
     int block_size, start, finish, iterration;
+
+    std::vector<int> vector1,vector2;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &csize);
@@ -39,17 +39,16 @@ int main(int argc, char *argv[])
 
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    int vector1[n], vector2[n];
     time_t random_time;
     srand((unsigned) time(&random_time) + prank);
 
     for(int i = 0; i<n; i++){
-        vector1[i] = rand()%20;
-        vector2[i] = rand()%20;
+        vector1.push_back(rand()%20);
+        vector2.push_back(rand()%20);
     }
 
-    MPI_Bcast(vector1, n, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(vector2, n, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(vector1.data(), n, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(vector2.data(), n, MPI_INT, 0, MPI_COMM_WORLD);
 
     double s = MPI_Wtime();
 
@@ -80,15 +79,18 @@ int main(int argc, char *argv[])
     MPI_Reduce(&d, &mind, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if(prank == 0){
+
         printf("\nScalar product of { ");
-        for(int i = 0; i<n; i++){
+        for(int i = 0; i<vector1.size(); i++){
             printf("%d ",vector1[i]);
         }
+        
         printf("} * { ");
-        for(int i = 0; i<n; i++){
+        for(int i = 0; i<vector2.size(); i++){
             printf("%d ",vector2[i]);
         }
-        printf("} is %d\n",tsum);
+        printf("} = %d\n",tsum);
+        
         printf("Elapsed time: %f\n\n",d);
     }
 
