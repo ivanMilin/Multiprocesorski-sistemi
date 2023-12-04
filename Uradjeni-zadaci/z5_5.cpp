@@ -55,23 +55,3 @@ int main(int argc, char *argv[]){
     
     return 0;
 }
-
-
-#include <iostream>
-#include <cstring>
-
-int main() {
-    const char* type[5] = {"dynamic", "guided", "auto", "runtime", "static"};
-    int index;
-
-    std::cout << "Unesite broj (0-4): ";
-    std::cin >> index;
-
-    if (index >= 0 && index < 5) {
-        std::cout << "Element na poziciji " << index << " je: " << type[index] << std::endl;
-    } else {
-        std::cout << "Uneseni broj van opsega." << std::endl;
-    }
-
-    return 0;
-}
