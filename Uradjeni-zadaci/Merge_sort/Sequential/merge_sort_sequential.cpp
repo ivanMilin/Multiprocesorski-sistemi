@@ -7,14 +7,14 @@ Zadatak : sekvencijalna implementacija MERGE-SORT algoritma
 // ./merge_sort_sequential 
 */
 
-#include <iostream> 
-#include<cstdlib>
-#include <chrono>
+#include <stdio.h>
+#include <time.h>
+#include <math.h>
+#include <new>
+#include <bits/stdc++.h>
 
 using namespace std::chrono;
 using namespace std; 
-
-using namespace std;
 
 // Merges two subarrays of array[].
 // First subarray is arr[begin..mid]
@@ -97,7 +97,8 @@ void printArray(int A[], int size)
 	cout << endl;
 }
 
-void saveArrayInFile(const char *filename, int length, int *array) {
+void saveArrayInFile(const char *filename, int length, int *array) 
+{
     FILE *f = fopen(filename, "w");
     if (f == NULL) {
         printf("Nisam uspeo da otvorim fajl");
@@ -111,40 +112,49 @@ void saveArrayInFile(const char *filename, int length, int *array) {
     fclose(f);
 }
 
+void sortChecking(int *array, int start,int finish)
+{	
+	for(int i = start; i < finish; i++){
+		if(array[i+1]<array[i]){
+			printf("Sort does not work, index is %d\n",i);
+		}
+	}
+}
+
 int main(int argc, char *argv[])
 {
-	auto start_time = high_resolution_clock::now();
+	
 	int length;
     //time_t t;
     
     printf("Length of an array : ");
 	scanf("%d", &length);
+	auto start_time = high_resolution_clock::now();
 
-	int array[length];
+	int *array = NULL;
+	array = new int[length];
+
     for(int i = 0; i != length; i++){
         srand(i);
 		array[i] = rand()%500;
     }
 
-	printf("Array before sort is saved in file : 'before_conversion.txt'\n");
-	saveArrayInFile("before_conversion.txt",length,array);
+	//printf("Array before sort is saved in file : 'before_conversion.txt'\n");
+	//saveArrayInFile("before_conversion.txt",length,array);
 
 	mergeSort(array, 0, length - 1);
 
-	for(int i = 0; i < length-1; i++){
-		if(array[i+1]<array[i]){
-			printf("Sort does not work, index is %d\n",i);
-		}
-	}
+	sortChecking(array,0,length - 1);
 	
-	printf("Array after sort is saved in file  : 'before_conversion.txt'\n");
-	saveArrayInFile("after_conversion.txt",length,array);
+	//printf("Array after sort is saved in file  : 'before_conversion.txt'\n");
+	//saveArrayInFile("after_conversion.txt",length,array);
 
 	auto stop_time = high_resolution_clock::now();
 	auto duration_time = duration_cast<milliseconds>((stop_time - start_time));
 
 	cout << "Elapsed time is : " << duration_time.count() << "ms"<< endl;
 	
+	delete[] array;
 	return 0;
 }
 
@@ -153,4 +163,11 @@ Length of an array : 2000000
 Array before sort is saved in file : 'before_conversion.txt'
 Array after sort is saved in file  : 'before_conversion.txt'
 Elapsed time is : 6560ms
+*/
+
+/* I Z M E NJ E N O
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 458ms
 */
