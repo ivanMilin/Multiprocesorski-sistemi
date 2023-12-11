@@ -112,24 +112,23 @@ void saveArrayInFile(const char *filename, int length, int *array) {
 
 int main(int argc, char *argv[])
 {
-    time_t t;
-
-    srand((unsigned)time(&t));
+    //time_t t;
+	double s = omp_get_wtime();
     
 	int tc = strtol(argv[1],NULL,10);
     int length = strtol(argv[2],NULL,10);
 	
     int array[length];
 
-    double s = omp_get_wtime();
-
     for(int i = 0; i != length; i++){
-        array[i] = rand()%200;
+        srand(i);
+		array[i] = rand()%500;
     }
 
-	//saveArrayInFile("before_conversion.txt",length,array);
-	//printf("Given array is \n");
-	//printArray(array, length);
+	printf("Length of an array : %d\n",length);
+	printf("Array before sort is saved in file : 'before_conversion.txt'\n");
+	saveArrayInFile("before_conversion.txt",length,array);
+
 
 	#pragma omp parallel num_threads(tc)
 	{
@@ -144,22 +143,61 @@ int main(int argc, char *argv[])
 
 	mergeSort(array, 0, length - 1);
 	
-	/*
-	for(int i = 0; i != length; i++){
-		if(array[i]>array[i+1]){
-			printf("Sort does not work!\n");
+	for(int i = 0; i < length-1; i++){
+		if(array[i+1]<array[i]){
+			printf("Sort does not work, index is %d\n",i);
 		}
 	}
-	*/
 	
-	//saveArrayInFile("after_conversion.txt",length,array);
-	//printf("\nSorted array is \n");
-	//printArray(array, length);
+	printf("Array after sort is saved in file  : 'before_conversion.txt'\n");
+	saveArrayInFile("after_conversion.txt",length,array);
 
-    s = omp_get_wtime() - s;
+    s = (omp_get_wtime() - s)*1000;
 
-    printf("Elapsed time is : %lf s\n", s);
+    printf("Elapsed time is : %.0lf ms\n", s);
 
 	return 0;
 }
 
+/*
+				./merge_sort_parallel 2 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3510 ms
+				
+				./merge_sort_parallel 3 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3392 ms
+
+				./merge_sort_parallel 4 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3383 ms
+				
+				 ./merge_sort_parallel 5 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3363 ms
+				
+				./merge_sort_parallel 6 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3347 ms
+				
+				./merge_sort_parallel 7 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3391 ms
+				
+				./merge_sort_parallel 8 2000000
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 3357 ms*/

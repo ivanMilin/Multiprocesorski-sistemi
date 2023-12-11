@@ -4,14 +4,15 @@ Student : Milin Ivan E1-79/2023
 Zadatak : sekvencijalna implementacija MERGE-SORT algoritma
 
 // g++ -fopenmp -Wall -o merge_sort_sequential merge_sort_sequential.cpp 
-// ./merge_sort_sequential <number_by_your_choice>
+// ./merge_sort_sequential 
 */
 
-#include <stdio.h>
-#include <omp.h>
-#include <time.h>
-#include <math.h>
-#include <bits/stdc++.h>
+#include <iostream> 
+#include<cstdlib>
+#include <chrono>
+
+using namespace std::chrono;
+using namespace std; 
 
 using namespace std;
 
@@ -112,39 +113,44 @@ void saveArrayInFile(const char *filename, int length, int *array) {
 
 int main(int argc, char *argv[])
 {
-    time_t t;
-
-    srand((unsigned)time(&t));
+	auto start_time = high_resolution_clock::now();
+	int length;
+    //time_t t;
     
-    int length = strtol(argv[1],NULL,10);
-    int array[length];
+    printf("Length of an array : ");
+	scanf("%d", &length);
 
-    double s = omp_get_wtime();
-
+	int array[length];
     for(int i = 0; i != length; i++){
-        array[i] = rand()%200;
+        srand(i);
+		array[i] = rand()%500;
     }
 
-	//printf("Given array is \n");
-	//printArray(array, length);
-	//saveArrayInFile("before_conversion.txt",length,array);
+	printf("Array before sort is saved in file : 'before_conversion.txt'\n");
+	saveArrayInFile("before_conversion.txt",length,array);
 
 	mergeSort(array, 0, length - 1);
 
-	for(int i = 0; i != length; i++){
-		if(array[i]>array[i+1]){
-			printf("Sort does not work!\n");
+	for(int i = 0; i < length-1; i++){
+		if(array[i+1]<array[i]){
+			printf("Sort does not work, index is %d\n",i);
 		}
 	}
+	
+	printf("Array after sort is saved in file  : 'before_conversion.txt'\n");
+	saveArrayInFile("after_conversion.txt",length,array);
 
-	//printf("\nSorted array is \n");
-	//printArray(array, length);
-	//saveArrayInFile("after_conversion.txt",length,array);
+	auto stop_time = high_resolution_clock::now();
+	auto duration_time = duration_cast<milliseconds>((stop_time - start_time));
 
-    s = omp_get_wtime() - s;
-
-    printf("Elapsed time is : %lf s\n", s);
-
+	cout << "Elapsed time is : " << duration_time.count() << "ms"<< endl;
+	
 	return 0;
 }
 
+/*
+Length of an array : 2000000
+Array before sort is saved in file : 'before_conversion.txt'
+Array after sort is saved in file  : 'before_conversion.txt'
+Elapsed time is : 6560ms
+*/
