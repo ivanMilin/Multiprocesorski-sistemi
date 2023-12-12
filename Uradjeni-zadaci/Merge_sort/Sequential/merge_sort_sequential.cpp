@@ -129,12 +129,13 @@ int main(int argc, char *argv[])
     
     printf("Length of an array : ");
 	scanf("%d", &length);
-	auto start_time = high_resolution_clock::now();
-
+	
 	int *array = NULL;
 	array = new int[length];
 
-    for(int i = 0; i != length; i++){
+	auto start_time = high_resolution_clock::now();
+    
+	for(int i = 0; i != length; i++){
         srand(i);
 		array[i] = rand()%500;
     }

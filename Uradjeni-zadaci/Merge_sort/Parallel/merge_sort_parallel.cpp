@@ -124,18 +124,18 @@ void sortChecking(int *array, int start,int finish)
 int main(int argc, char *argv[])
 {
     //time_t t;
-	double s = omp_get_wtime();
     
 	int tc = strtol(argv[1],NULL,10);
     int length = strtol(argv[2],NULL,10);
 	
 	int *array = NULL;
 	array = new int[length];
-
-    for(int i = 0; i != length; i++){
-        srand(i);
+	double s = omp_get_wtime();
+	
+	for(int i = 0; i != length; i++){
+		srand(i);
 		array[i] = rand()%500;
-    }
+	}
 
 	//printf("Length of an array : %d\n",length);
 	//printf("Array before sort is saved in file : 'before_conversion.txt'\n");
@@ -151,10 +151,18 @@ int main(int argc, char *argv[])
 	    int start  = length*i/ds;
 	    int finish = length*(i + 1)/ds-1;
 	    mergeSort(array,start,finish);   
+		
+		if(tc == 0){
+			mergeSort(array, 0, length/2);
+		}
+		if(tc == 1){
+			mergeSort(array, length/2+1, length - 1);
+		}
 	}
 
 	mergeSort(array, 0, length - 1);
-	
+
+	/*
 	#pragma omp parallel num_threads(tc)
 	{
 		int trank = omp_get_thread_num();	
@@ -166,7 +174,9 @@ int main(int argc, char *argv[])
 
 		sortChecking(array,start_check,finish_check);
 		//printf("Start = %d, finish = %d\n",start_check,finish_check);
-	}
+	}*/
+
+	sortChecking(array,0,length-1);
 	
 	//printf("Array after sort is saved in file  : 'before_conversion.txt'\n");
 	//saveArrayInFile("after_conversion.txt",length,array);
