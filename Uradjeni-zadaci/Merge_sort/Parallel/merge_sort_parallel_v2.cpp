@@ -48,27 +48,6 @@ void merge(int array[], int const left, int const mid, int const right) {
     delete[] rightArray;
 }
 
-void mergeSort(int array[], int const begin, int const end) {
-    if (begin >= end)
-        return;
-
-    int mid = begin + (end - begin) / 2;
-
-    #pragma omp parallel sections
-    {
-        #pragma omp section
-        {
-            mergeSort(array, begin, mid);
-        }
-        #pragma omp section
-        {
-            mergeSort(array, mid + 1, end);
-        }
-    }
-
-    merge(array, begin, mid, end);
-}
-
 void printArray(int A[], int size) {
     for (int i = 0; i < size; i++)
         cout << A[i] << " ";
@@ -92,11 +71,22 @@ void saveArrayInFile(const char *filename, int length, int *array)
 
 void sortChecking(int *array, int start,int finish)
 {	
-	for(int i = start; i < finish-1; i++){
+	for(int i = start; i < finish; i++){
 		if(array[i+1]<array[i]){
 			printf("Sort does not work, index is %d\n",i);
 		}
 	}
+}
+
+void mergeSort(int array[], int const begin, int const end) {
+    if (begin >= end)
+        return;
+
+    int mid = begin + (end - begin) / 2;
+
+    mergeSort(array, begin, mid);
+    mergeSort(array, mid + 1, end);
+    merge(array, begin, mid, end);
 }
 
 int main(int argc, char *argv[]) {
@@ -104,7 +94,7 @@ int main(int argc, char *argv[]) {
     int tc = strtol(argv[1], NULL, 10);
     int length = strtol(argv[2], NULL, 10);
 
-    omp_set_num_threads(tc);
+    //omp_set_num_threads(tc);
 
     int *array = new int[length];
 
@@ -116,10 +106,16 @@ int main(int argc, char *argv[]) {
     
     printf("Array before sort is saved in file : 'before_conversion.txt'\n");
 	saveArrayInFile("before_conversion.txt",length,array);
+    //printArray(array,length);
     
-    mergeSort(array, 0, length - 1);
+    #pragma omp parallel num_threads(tc) 
+    {
+        #pragma omp single
+        mergeSort(array, 0, length-1);
+    }
 
     sortChecking(array, 0, length - 1);
+    //printArray(array,length);
 
     printf("Array after sort is saved in file  : 'after_conversion.txt'\n");
 	saveArrayInFile("after_conversion.txt",length,array);
