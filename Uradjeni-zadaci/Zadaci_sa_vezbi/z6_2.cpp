@@ -38,7 +38,8 @@ int main(int argc, char* argv[]) {
 
     s = omp_get_wtime() - s;
 
-    printf("\nIskoriscen je tip : %s\n", schedule_type[index]);    
+    printf("\nIskoriscen je tip : %s\n", schedule_type[index]); 
+    printf("Prosti brojevi su upisani u fajl\n");   
     printf("\nElapsed time %lf s\n\n",s);
 
     return 0;

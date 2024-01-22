@@ -23,7 +23,9 @@ int getInput(){
 
 int main(int argc, char *argv[])
 {
-    int n,sum,tsum;
+    int n;
+    int sum = 0;
+    int tsum = 0;
     int csize, prank;
     int block_size, start, finish, iterration;
 
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
     else {
         finish = n;
     }
-    
+
     if(start < n){
         while(iterration<finish){
             sum = sum + vector1[iterration]*vector2[iterration];
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
     double e = MPI_Wtime();
     double d = e-s;
     double mind; 
-    
+
     MPI_Reduce(&d, &mind, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if(prank == 0){
@@ -84,13 +86,13 @@ int main(int argc, char *argv[])
         for(int i = 0; i<vector1.size(); i++){
             printf("%d ",vector1[i]);
         }
-        
+
         printf("} * { ");
         for(int i = 0; i<vector2.size(); i++){
             printf("%d ",vector2[i]);
         }
         printf("} = %d\n",tsum);
-        
+
         printf("Elapsed time: %f\n\n",d);
     }
 
